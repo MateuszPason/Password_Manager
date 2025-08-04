@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as messagebox
 
 class PasswordManagerApp:
     def __init__(self):
@@ -7,14 +8,40 @@ class PasswordManagerApp:
         self.root.geometry("400x300")
         self.root.resizable(False, False)
 
-        self.build_ui()
+        self.current_frame = None
+        self._show_login_screen()
 
-    def build_ui(self):
-        title_label = tk.Label(self.root, text="Password Manager", font=("Arial", 16))
-        title_label.pack(pady=20)
+    def _clear_frame(self):
+        if self.current_frame:
+            self.current_frame.destroy()
 
-        exit_button = tk.Button(self.root, text='Exit', command=self.root.quit)
-        exit_button.pack(pady=10)
+    def _show_login_screen(self):
+        self._clear_frame()
+        self.current_frame = tk.Frame(self.root)
+        self.current_frame.pack(fill="both", expand=True)
+
+        tk.Label(self.current_frame, text="Enter Master Password", font=("Arial", 14))
+
+        self.master_password_entry = tk.Entry(self.current_frame, show='*', width=30)
+        self.master_password_entry.pack(pady=10)
+
+        tk.Button(self.current_frame, text="Unlock", command=self._on_unlock).pack(pady=10)
+
+    def _on_unlock(self):
+        password = self.master_password_entry.get()
+        if password.strip():
+            self._show_main_screen()
+        else:
+            messagebox.showerror("Error", "Master password is required")
+
+    def _show_main_screen(self):
+        self._clear_frame()
+        self.current_frame = tk.Frame(self.root)
+        self.current_frame.pack(fill="both", expand=True)
+
+        tk.Label(self.current_frame, text="Welcome to Password Manager", font=("Arial", 10)).pack(pady=20)
+
+        tk.Button(self.current_frame, text="Exit", command=self.root.quit).pack(pady=10)
 
     def run(self):
         self.root.mainloop()
