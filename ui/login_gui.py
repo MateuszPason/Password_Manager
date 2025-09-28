@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from core.database import get_setting, insert_setting
-from core.encryption import derive_key_pbkdf2_sha256
-import base64
-import os
+from core.database import get_setting
+from controllers.auth_controller import AuthController
 
 ITERATIONS = 200_000
 
@@ -13,6 +11,7 @@ class LoginWindow:
         self.root.title("Password Manager - Login")
         self.root.geometry("450x280")
         self.master_password = None
+        self.auth_controller = AuthController()
         self.is_first_run = get_setting("master_hash") is None
 
         self._build_ui()
@@ -45,34 +44,16 @@ class LoginWindow:
             if pwd != confirm:
                 messagebox.showerror("Error", "Passwords do not match.")
                 return
-            self._set_master_password(pwd)
+            self.auth_controller.create_master_password(pwd)
         else:
             if not pwd:
                 messagebox.showerror("Error", "Master password cannot be empty.")
                 return
-            if not self._verify_master_password(pwd):
+            if not self.auth_controller.check_master_password(pwd):
                 messagebox.showerror("Error", "Incorrect master password.")
                 return
         self.master_password = pwd
         self.root.destroy()
-
-    def _set_master_password(self, password: str):
-        salt = os.urandom(16)
-        key = derive_key_pbkdf2_sha256(password + base64.b64encode(salt).decode())
-        insert_setting("master_salt", base64.b64encode(salt).decode())
-        insert_setting("master_hash", base64.b64encode(key).decode())
-        messagebox.showinfo("Success", "Master password created!")
-
-    def _verify_master_password(self, password: str) -> bool:
-        salt_b64 = get_setting("master_salt")
-        hash_b64 = get_setting("master_hash")
-        if not salt_b64 or not hash_b64:
-            return False
-        salt = base64.b64decode(salt_b64)
-        stored_key = base64.b64decode(hash_b64)
-        entered_key = derive_key_pbkdf2_sha256(password + base64.b64encode(salt).decode())
-        return entered_key == stored_key
-
 
     def run(self):
         self.root.mainloop()

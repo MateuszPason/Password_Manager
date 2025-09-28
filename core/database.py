@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from core.models import Credential
 
 DB_PATH = "data/vault.db"
 
@@ -63,7 +64,7 @@ def insert_credential(site: str, username: str, password: bytes) -> None:
         except Exception as e:
             raise e
 
-def search_credentials(query: str, cred_id: int = None) -> list[tuple]:
+def search_credentials(query: str, cred_id: int = None) -> list[Credential]:
     """
     Search credentials by site/username or by credential ID.
     Args:
@@ -83,7 +84,7 @@ def search_credentials(query: str, cred_id: int = None) -> list[tuple]:
                     (f"%{query}%", f"%{query}%")
                 )
             rows = cursor.fetchall()
-            return rows
+            return [Credential(id=row[0], site=row[1], username=row[2], password=row[3]) for row in rows]
         except Exception as e:
             raise e
 
