@@ -1,7 +1,7 @@
 import os 
 import hashlib
 from typing import Optional
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM # type: ignore
 
 SALT_FILE = "data/salt.bin"
 KDF_ITERNATIONS = 200_000
