@@ -2,11 +2,7 @@ import os
 import hashlib
 from typing import Optional
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM # type: ignore
-
-SALT_FILE = "data/salt.bin"
-KDF_ITERNATIONS = 200_000
-KEY_LEN = 32
-AAD = b"pmgr_v1"
+from core.config import SALT_FILE, KDF_ITERATIONS, KEY_LEN, AAD
 
 def _ensure_data_dir() -> None:
     os.makedirs("data", exist_ok=True)
@@ -28,7 +24,7 @@ def get_or_create_salt(path:str = SALT_FILE) -> bytes:
 def derive_key_pbkdf2_sha256(
         master_password: str,
         salt: Optional[bytes] = None,
-        iterations: int = KDF_ITERNATIONS,
+        iterations: int = KDF_ITERATIONS,
         key_len: int = KEY_LEN,
 ) -> bytes:
     if salt is None:

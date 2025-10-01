@@ -1,4 +1,5 @@
 from tkinter import messagebox
+from core.config import DEFAULT_PASSWORD_LENGTH
 
 class UIController:
     def __init__(self, credential_controller):
@@ -43,7 +44,7 @@ class UIController:
         except Exception:
             return False, "Failed to decrypt password. It may be corrupted or the key is invalid."
 
-    def generate_password(self, length=16):
+    def generate_password(self, length=DEFAULT_PASSWORD_LENGTH):
         password = self.credential_controller.generate_password(length)
         return password
 

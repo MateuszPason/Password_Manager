@@ -3,7 +3,7 @@ from core.database import insert_credential, search_credentials, delete_credenti
 from core.encryption import encrypt_password, decrypt_password
 from core.utils import derive_master_key
 from core.models import Credential
-import string
+from core.config import DEFAULT_PASSWORD_LENGTH, PASSWORD_CHARSET
 
 class CredentialController:
     def __init__(self, master_password):
@@ -26,8 +26,8 @@ class CredentialController:
         if result:
             return decrypt_password(result[0].password, key)
         return None
-    
-    def generate_password(self, length=16) -> str:
-        chars = string.ascii_letters + string.digits + string.punctuation
+
+    def generate_password(self, length=DEFAULT_PASSWORD_LENGTH) -> str:
+        chars = PASSWORD_CHARSET
         password = "".join(secrets.choice(chars) for _ in range(length))
         return password
