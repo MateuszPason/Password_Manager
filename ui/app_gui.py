@@ -1,12 +1,10 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from controllers.credential_controller import CredentialController
-from controllers.ui_controller import UIController
 
 class PasswordManagerApp:
-    def __init__(self, master_password):
-        self.credential_controller = CredentialController(master_password)
-        self.ui_controller = UIController(self.credential_controller)
+    def __init__(self, master_password, credential_controller, ui_controller):
+        self.credential_controller = credential_controller
+        self.ui_controller = ui_controller
         self.master_password = master_password
         self.root = tk.Tk()
         self.root.title("Password Manager")
