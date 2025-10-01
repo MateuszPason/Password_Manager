@@ -1,0 +1,2 @@
+# Core dependencies
+cryptography>=46.0.0
