@@ -1,8 +1,7 @@
 import sqlite3
 import os
 from core.models import Credential
-
-DB_PATH = "data/vault.db"
+from core.config import DB_PATH
 
 
 class DatabaseConnection:

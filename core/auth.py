@@ -3,8 +3,7 @@ import os
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from core.database import insert_setting, get_setting
-
-ITERATIONS = 200_000
+from core.config import KDF_ITERATIONS
 
 def set_master_password(password: str):
     salt = os.urandom(16)
@@ -27,6 +26,6 @@ def _derive_key(password: str, salt: bytes) -> bytes:
         algorithm=hashes.SHA256(),
         length=32,
         salt=salt,
-        iterations=ITERATIONS,
+        iterations=KDF_ITERATIONS,
     )
     return kdf.derive(password.encode())
